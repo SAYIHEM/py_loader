@@ -1,0 +1,6 @@
+src/temp
+src/test
+downloads
+
+.idea
+*.pyc
