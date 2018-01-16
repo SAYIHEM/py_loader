@@ -17,6 +17,7 @@ class DownloadThread(Thread):
 
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):
         super(DownloadThread, self).__init__(group=group, target=target, name=name, verbose=verbose)
+
         self.args = args
         self.kwargs = kwargs
 

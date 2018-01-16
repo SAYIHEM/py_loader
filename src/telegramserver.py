@@ -16,6 +16,7 @@ def download(bot, update):
     logger = logging.getLogger()
 
     try:
+        #TODO: avoid download video multiple times with "Thread map"
         thread = DownloadThread(args=(update, dir_temp, dir_download,))
         thread.start()
     except Exception as e:
@@ -54,17 +55,23 @@ class TelegramServer:
     updater = ""
 
     def __init__(self, token):
-
         self.updater = Updater(token)
         self._set_handler()
+
+        self.logger.debug("Initialized Updater with API-Token.")
 
     def _set_handler(self):
         self.updater.dispatcher.add_handler(CommandHandler("d", download))
         self.updater.dispatcher.add_error_handler(error_callback)
 
+        self.logger.debug("Set up handler.")
+
     def start(self):
         self.updater.start_polling()
         self.updater.idle()
+
+        self.logger.info("Started Telegram Bot.")
+
 
     def add_handler(self, handler):
         if not isinstance(handler, CommandHandler):
