@@ -1,9 +1,12 @@
 from threading import Thread
 from ytloader import YTLoader
 from converter import Converter
+from pathlib import Path
+import os
+from os.path import basename
 import logging
 
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 class DownloadThread(Thread):
@@ -36,9 +39,24 @@ class DownloadThread(Thread):
         loader = YTLoader(url)
         loader.download(self.dir_temp)
 
-        # TODO: build paths more elegant
-        converter = Converter(self.dir_temp + "/" + loader.title + ".webm") #TODO: handle different video formats
-        converter.to_mp3(self.dir_download + "/" + loader.title + ".mp3")
+        # Get downloaded video
+        video = ""
+        for file in Path(self.dir_temp).iterdir():
+            path = str(file.absolute())
+            filename = basename(path)
+            title = os.path.splitext(filename)[0]
+
+            if title == loader.title:
+                video = filename
+
+        self.logger.debug("Converting: " + video)
+
+        file_in = self.dir_temp + "/" + video
+        file_out = self.dir_download + "/" + loader.title + ".mp3"
+
+        # Convert
+        converter = Converter(file_in)
+        converter.to_mp3(file_out)
 
         # Reply message
         self.update.message.reply_text('Downloaded: {}'.format(loader.title))
