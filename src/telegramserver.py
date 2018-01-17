@@ -13,18 +13,6 @@ logging.basicConfig(level=logging.DEBUG,
 dir_temp = "temp"
 dir_download = "/home/tomg/projects/py_loader/downloads"
 
-def download(bot, update):
-    logger = logging.getLogger()
-
-    try:
-        #TODO: avoid download video multiple times with "Thread map"
-        thread = DownloadThread(args=(update, dir_temp, dir_download,))
-        thread.start()
-    except Exception as e:
-        chat_id = update.message.chat_id
-        error = "There was an error: " + str(e)
-        bot.send_message(chat_id=chat_id, text=error)
-
 
 def error_callback(bot, update, error):
 
@@ -48,12 +36,20 @@ def error_callback(bot, update, error):
     except TelegramError:
         error = "There was an error: " + str(error)
 
+
 def regex_download(bot, update):
     logger = logging.getLogger()
     logger.debug("Found RegEx for YouTube link!")
 
-    chat_id = update.message.chat_id
-    bot.send_message(chat_id=chat_id, text="yield")
+    try:
+        # TODO: avoid download video multiple times with "Thread map"
+        thread = DownloadThread(args=(update, dir_temp, dir_download,))
+        thread.start()
+    except Exception as e:
+        chat_id = update.message.chat_id
+        error = "There was an error: " + str(e)
+        bot.send_message(chat_id=chat_id, text=error)
+
 
 class TelegramServer:
 
@@ -69,8 +65,6 @@ class TelegramServer:
         self.logger.debug("Initialized Updater with API-Token.")
 
     def _set_handler(self):
-        self.updater.dispatcher.add_handler(CommandHandler("d", download))
-
         self.updater.dispatcher.add_handler(RegexHandler(regex.yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
 

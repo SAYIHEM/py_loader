@@ -29,7 +29,7 @@ class Converter:
         if not path.exists():
             path.mkdir(parents=True)
 
-
+        # TODO: put output to logger
         clip = mp.VideoFileClip(self.file)
         clip.audio.write_audiofile(out, fps=44100,
                                    nbytes=2,

@@ -30,10 +30,8 @@ class DownloadThread(Thread):
 
         self.logger.info("New Thread for downloading and converting.")
 
-        # Remove command from yt-link
-        cmd = self.update.message.text
-        arr = cmd.split(" ")
-        url = arr[1]
+        # Get url from message
+        url = self.update.message.text
 
         loader = YTLoader(url)
         loader.download(self.dir_temp)
