@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO,
 
 class DownloadThread(Thread):
 
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
 
     update = ""
 

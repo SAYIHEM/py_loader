@@ -1,9 +1,10 @@
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from IllegalArgumentException import IllegalArgumentException
+from src.exceptions.IllegalArgumentException import IllegalArgumentException
 from download_thread import DownloadThread
 import logging
+import regex
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -47,14 +48,21 @@ def error_callback(bot, update, error):
     except TelegramError:
         error = "There was an error: " + str(error)
 
+def regex_download(bot, update):
+    logger = logging.getLogger()
+    logger.debug("Found RegEx for YouTube link!")
+
+    chat_id = update.message.chat_id
+    bot.send_message(chat_id=chat_id, text="yield")
 
 class TelegramServer:
 
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
 
     updater = ""
 
     def __init__(self, token):
+
         self.updater = Updater(token)
         self._set_handler()
 
@@ -62,6 +70,8 @@ class TelegramServer:
 
     def _set_handler(self):
         self.updater.dispatcher.add_handler(CommandHandler("d", download))
+
+        self.updater.dispatcher.add_handler(RegexHandler(regex.yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
 
         self.logger.debug("Set up handler.")
@@ -71,6 +81,8 @@ class TelegramServer:
         self.updater.idle()
 
         self.logger.info("Started Telegram Bot.")
+
+
 
 
     def add_handler(self, handler):

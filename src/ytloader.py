@@ -1,9 +1,10 @@
 # coding=utf-8
 from pytube import YouTube
-from unidecode import unidecode
-
+import logging
 
 class YTLoader:
+
+    logger = logging.getLogger(__name__)
 
     yt = ""
     title = ""
@@ -17,6 +18,8 @@ class YTLoader:
         self.title = self.yt.title.encode('ascii', 'ignore')
 
     def download(self, destination="temp"):
+
+        # Todo: create destination when not existing
 
         # TODO: select video
         stream = self.yt.streams.first()

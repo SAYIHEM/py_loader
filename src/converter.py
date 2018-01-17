@@ -1,13 +1,13 @@
 # coding=utf-8
 import moviepy.editor as mp
 from pathlib import Path
-from FileNotFoundException import FileNotFoundException
+from src.exceptions.FileNotFoundException import FileNotFoundException
 import logging
 
 
 class Converter:
 
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
 
     file = ""
 
