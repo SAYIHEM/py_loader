@@ -2,11 +2,12 @@ from threading import Thread
 from ytloader import YTLoader
 from converter import Converter
 from pathlib import Path
+from src.exceptions.FileNotFoundException import FileNotFoundException
 import os
 from os.path import basename
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 class DownloadThread(Thread):
@@ -46,8 +47,9 @@ class DownloadThread(Thread):
             filename = basename(path)
             title = os.path.splitext(filename)[0]
 
-            if title == loader.title:
+            if title == loader.title.replace(".", ""):
                 video = filename
+        if video == "": raise FileNotFoundException("Could not find downloaded video!")
 
         self.logger.debug("Converting: " + video)
 
@@ -57,6 +59,12 @@ class DownloadThread(Thread):
         # Convert
         converter = Converter(file_in)
         converter.to_mp3(file_out)
+
+        # Delete video file
+        try:
+            os.remove(file_in)
+        except OSError as e:
+            self.logger.error("Cannot delete File: " + str(e))
 
         # Reply message
         self.update.message.reply_text('Downloaded: {}'.format(loader.title))
