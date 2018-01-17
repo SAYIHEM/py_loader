@@ -1,6 +1,8 @@
 # coding=utf-8
 from pytube import YouTube
 import logging
+import os
+from pathlib import Path
 
 class YTLoader:
 
@@ -11,7 +13,6 @@ class YTLoader:
 
     def __init__(self, url):
 
-        # TODO: check url
         self.yt = YouTube(url)
 
         # Remove UTF-8 characters from title
@@ -19,7 +20,10 @@ class YTLoader:
 
     def download(self, destination="temp"):
 
-        # Todo: create destination when not existing
+        # Create destination when not existing
+        path = Path(destination)
+        if not path.exists():
+            path.mkdir(parents=True)
 
         # TODO: select video
         stream = self.yt.streams.first()

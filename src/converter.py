@@ -3,6 +3,7 @@ import moviepy.editor as mp
 from pathlib import Path
 from src.exceptions.FileNotFoundException import FileNotFoundException
 import logging
+import os
 
 
 class Converter:
@@ -22,6 +23,12 @@ class Converter:
         self.file = file
 
     def to_mp3(self, out="temp/audio.mp3"):
+
+        # Create destination when not existing
+        path = Path(os.path.dirname(out))
+        if not path.exists():
+            path.mkdir(parents=True)
+
 
         clip = mp.VideoFileClip(self.file)
         clip.audio.write_audiofile(out, fps=44100,
