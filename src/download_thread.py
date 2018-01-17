@@ -4,6 +4,7 @@ from converter import Converter
 from pathlib import Path
 from src.exceptions.FileNotFoundException import FileNotFoundException
 import os
+import re
 from os.path import basename
 import logging
 
@@ -47,7 +48,7 @@ class DownloadThread(Thread):
             filename = basename(path)
             title = os.path.splitext(filename)[0]
 
-            if title == loader.title.replace(".", ""):
+            if title == re.sub('[^\w\-_\. ]', '', loader.title):
                 video = filename
         if video == "": raise FileNotFoundException("Could not find downloaded video!")
 
@@ -67,5 +68,5 @@ class DownloadThread(Thread):
             self.logger.error("Cannot delete File: " + str(e))
 
         # Reply message
-        self.update.message.reply_text('Downloaded: {}'.format(loader.title))
+        self.update.message.reply_text('Downloaded: \n{}'.format(loader.title))
         self.logger.info("Done converting: " + loader.title)
