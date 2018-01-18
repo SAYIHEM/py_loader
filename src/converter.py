@@ -10,7 +10,7 @@ class Converter:
 
     logger = logging.getLogger(__name__)
 
-    file = ""
+    file = None
 
     def __init__(self, file):
 

@@ -11,10 +11,10 @@ class DownloadThread(Thread):
 
     logger = logging.getLogger(__name__)
 
-    update = ""
+    update = None
 
-    dir_temp = ""
-    dir_download = ""
+    dir_temp = None
+    dir_download = None
 
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):
         super(DownloadThread, self).__init__(group=group, target=target, name=name, verbose=verbose)
@@ -35,7 +35,7 @@ class DownloadThread(Thread):
         url = self.update.message.text
 
         loader = YTLoader(url)
-        video = loader.download(self.dir_temp) # TODO: Get name of file to fix FileNotFoundException
+        video = loader.download(self.dir_temp)
 
         self.logger.debug("Converting: " + str(video))
 

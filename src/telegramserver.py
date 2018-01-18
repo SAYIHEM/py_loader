@@ -55,7 +55,7 @@ class TelegramServer:
 
     logger = logging.getLogger(__name__)
 
-    updater = ""
+    updater = None
 
     def __init__(self, token):
 
@@ -76,9 +76,7 @@ class TelegramServer:
 
         self.logger.info("Started Telegram Bot.")
 
-
-
-
+    # TODO: Fix function
     def add_handler(self, handler):
         if not isinstance(handler, CommandHandler):
             self.logger.error("Handler was no Telegram.CommandHandler!")
@@ -87,6 +85,3 @@ class TelegramServer:
         self.updater.stop()
 
         self.updater.dispatcher.add_handler(handler)
-
-        self.updater.start_polling()
-        self.updater.idle()

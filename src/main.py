@@ -1,14 +1,11 @@
 # coding=utf-8
-from ytloader import YTLoader
-from converter import Converter
 from telegramserver import TelegramServer
-from telegram.ext import CommandHandler
 from threading import Thread
 import logging
 
 class ServerThread(Thread):
 
-    server = ""
+    server = None
 
     def __init__(self, telegram_server):
         Thread.__init__(self)

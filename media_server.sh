@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 sudo /etc/init.d/plexmediaserver start
 sudo systemctl daemon-reload
 sudo service apache2 restart

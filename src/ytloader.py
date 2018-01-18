@@ -2,15 +2,15 @@
 from pytube import YouTube
 import logging
 import re
-import os
 from pathlib import Path
+
 
 class YTLoader:
 
     logger = logging.getLogger(__name__)
 
-    yt = ""
-    title = ""
+    yt = None
+    title = None
 
     def __init__(self, url):
 
@@ -28,19 +28,18 @@ class YTLoader:
 
         # TODO: select video
         audio_streams = self.yt.streams.filter(only_audio=True).all()
-        stream = self.__best_stream(audio_streams)
+        stream = self._best_stream(audio_streams)
         stream.download(destination, filename=self.title)
 
         self.logger.debug("List of audio streams: " + str(audio_streams))
         self.logger.debug("Selecting: " + str(stream))
 
-        file = self.__toPath(self.title)
+        file = self._toPath(self.title)
         extension = "." + str(stream.mime_type.split("/")[1])
 
-        s = Path(destination, file + extension)
         return Path(destination, file + extension)
 
-    def __best_stream(self, steam_list):
+    def _best_stream(self, steam_list):
         stream = steam_list[0]
         for s in steam_list:
             rate_stream = int(re.sub("[^0-9]", "", stream.abr))
@@ -50,10 +49,10 @@ class YTLoader:
 
         return stream
 
-    def __path(self, s):
+    def _path(self, s):
         return s.encode('ascii', errors='ignore')
 
-    def __toPath(self, s, max_length=255):
+    def _toPath(self, s, max_length=255):
         """Sanitize a string making it safe to use as a filename.
 
         This function was based off the limitations outlined here:
@@ -73,6 +72,8 @@ class YTLoader:
             '\"', '\#', '\$', '\%', '\'', '\*', '\,', '\.', '\/', '\:',
             '\;', '\<', '\>', '\?', '\\', '\^', '\|', '\~', '\\\\',
         ]
+
+        # TODO: Do not remove 'äöü'
         pattern = '|'.join(ntfs_chrs + chrs)
         regex = re.compile(pattern, re.UNICODE)
         filename = regex.sub('', s)
