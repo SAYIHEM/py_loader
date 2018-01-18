@@ -1,7 +1,7 @@
 # coding=utf-8
 import moviepy.editor as mp
 from pathlib import Path
-from src.exceptions.FileNotFoundException import FileNotFoundException
+from FileNotFoundException import FileNotFoundException
 import logging
 import os
 

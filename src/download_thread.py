@@ -2,10 +2,6 @@ from threading import Thread
 from ytloader import YTLoader
 from converter import Converter
 from pathlib import Path
-from src.exceptions.FileNotFoundException import FileNotFoundException
-import os
-import re
-from os.path import basename
 import logging
 
 logging.basicConfig(level=logging.INFO,

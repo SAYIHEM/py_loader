@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from src.exceptions.IllegalArgumentException import IllegalArgumentException
+from IllegalArgumentException import IllegalArgumentException
 from download_thread import DownloadThread
 import logging
 import regex
