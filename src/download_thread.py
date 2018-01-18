@@ -39,32 +39,20 @@ class DownloadThread(Thread):
         url = self.update.message.text
 
         loader = YTLoader(url)
-        loader.download(self.dir_temp)
+        video = loader.download(self.dir_temp) # TODO: Get name of file to fix FileNotFoundException
 
-        # Get downloaded video
-        video = ""
-        for file in Path(self.dir_temp).iterdir():
-            path = str(file.absolute())
-            filename = basename(path)
-            title = os.path.splitext(filename)[0]
+        self.logger.debug("Converting: " + str(video))
 
-            if title == re.sub('[^\w\-_\. ]', '', loader.title):
-                video = filename
-        if video == "": raise FileNotFoundException("Could not find downloaded video!")
-
-        self.logger.debug("Converting: " + video)
-
-        file_in = self.dir_temp + "/" + video
-        file_out = self.dir_download + "/" + loader.title + ".mp3"
+        file_out = Path(self.dir_download, loader.title + ".mp3")
 
         # Convert
-        converter = Converter(file_in)
+        converter = Converter(video)
         converter.to_mp3(file_out)
 
         # Delete video file
         try:
-            os.remove(file_in)
-        except OSError as e:
+            video.unlink()
+        except Exception as e:
             self.logger.error("Cannot delete File: " + str(e))
 
         # Reply message

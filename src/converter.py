@@ -15,9 +15,10 @@ class Converter:
     def __init__(self, file):
 
         # Check File exists
-        path = Path(file)
-        if not path.is_file():
-            self.logger.error("Invalid path: " + file)
+        if not isinstance(file, Path):
+            file = Path(file)
+        if not file.is_file():
+            self.logger.error("Invalid path: " + str(file))
             raise FileNotFoundException()
 
         self.file = file
@@ -25,13 +26,13 @@ class Converter:
     def to_mp3(self, out="temp/audio.mp3"):
 
         # Create destination when not existing
-        path = Path(os.path.dirname(out))
+        path = Path(os.path.dirname(str(out)))
         if not path.exists():
             path.mkdir(parents=True)
 
         # TODO: put output to logger
-        clip = mp.VideoFileClip(self.file)
-        clip.audio.write_audiofile(out, fps=44100,
+        clip = mp.AudioFileClip(str(self.file))
+        clip.write_audiofile(str(out), fps=44100,
                                    nbytes=2,
                                    buffersize=2000,
                                    codec=None,
