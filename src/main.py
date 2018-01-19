@@ -1,22 +1,7 @@
 # coding=utf-8
 from telegramserver import TelegramServer
-from threading import Thread
 import logging
 
-class ServerThread(Thread):
-
-    server = None
-
-    def __init__(self, telegram_server):
-        Thread.__init__(self)
-        self.server = server
-
-    def run(self):
-        server.start()
-
-
-def start_server(server):
-    server.start()
 
 
 if __name__ == "__main__":
@@ -27,7 +12,3 @@ if __name__ == "__main__":
     server = TelegramServer('548165005:AAGUTShuLphcrMwGbhDcfVndQ009zjHuFHk')
     #server.add_handler(CommandHandler("d", download))
     server.start()
-
-    #thread = ServerThread(server)
-    #thread.start()
-    #thread.add_handler(CommandHandler("d", download))

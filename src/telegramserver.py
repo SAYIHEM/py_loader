@@ -10,8 +10,8 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Globals
-dir_temp = "temp"
-dir_download = "/home/tomg/projects/py_loader/downloads"
+dir_temp = "/home/pi/py_loader/temp"
+dir_download = "/home/pi/music/downloads"
 
 
 def error_callback(bot, update, error):
@@ -51,6 +51,11 @@ def regex_download(bot, update):
         bot.send_message(chat_id=chat_id, text=error)
 
 
+def ping(bot, update):
+    chat_id = update.message.chat_id
+    bot.send_message(chat_id=chat_id, text="ping")
+
+# TODO: Add 'Show commands button'
 class TelegramServer:
 
     logger = logging.getLogger(__name__)
@@ -64,9 +69,11 @@ class TelegramServer:
 
         self.logger.debug("Initialized Updater with API-Token.")
 
+    # TODO: New handler for: ping, send audio
     def _set_handler(self):
         self.updater.dispatcher.add_handler(RegexHandler(regex.yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
+        self.updater.dispatcher.add_handler(CommandHandler("ping", ping))
 
         self.logger.debug("Set up handler.")
 
