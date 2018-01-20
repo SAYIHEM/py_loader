@@ -6,7 +6,7 @@ from download_thread import DownloadThread
 import logging
 import regex
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Globals
@@ -78,10 +78,10 @@ class TelegramServer:
         self.logger.debug("Set up handler.")
 
     def start(self):
+        self.logger.info("Started Telegram Bot.")
         self.updater.start_polling()
         self.updater.idle()
 
-        self.logger.info("Started Telegram Bot.")
 
     # TODO: Fix function
     def add_handler(self, handler):
