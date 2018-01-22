@@ -27,7 +27,6 @@ class DownloadThread(Thread):
     def run(self):
 
         self.logger.info("New Thread for downloading and converting.")
-        self.logger.error("ROOOR")
 
         # Get url from message
         url = self.update.message.text

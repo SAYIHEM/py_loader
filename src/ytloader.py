@@ -4,7 +4,6 @@ import logging
 import re
 from pathlib import Path
 
-
 class YTLoader:
 
     logger = logging.getLogger(__name__)
@@ -17,7 +16,7 @@ class YTLoader:
         self.yt = YouTube(url)
 
         # Remove UTF-8 characters from title
-        self.title = self.yt.title.encode('ascii', 'ignore')
+        self.title = self._toPath(self.yt.title)
 
     def download(self, destination="temp"):
 
@@ -34,7 +33,7 @@ class YTLoader:
         self.logger.debug("List of audio streams: " + str(audio_streams))
         self.logger.debug("Selecting: " + str(stream))
 
-        file = self._toPath(self.title)
+        file = self._toPath(self.title) # TODO remove double '_toPath'
         extension = "." + str(stream.mime_type.split("/")[1])
 
         return Path(destination, file + extension)
@@ -77,4 +76,4 @@ class YTLoader:
         pattern = '|'.join(ntfs_chrs + chrs)
         regex = re.compile(pattern, re.UNICODE)
         filename = regex.sub('', s)
-        return unicode(filename[:max_length].rsplit(' ', 0)[0])
+        return str(filename[:max_length].rsplit(' ', 0)[0])
