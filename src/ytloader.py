@@ -26,7 +26,7 @@ class YTLoader:
         if not path.exists():
             path.mkdir(parents=True)
 
-        # TODO: select video
+        # Select audio stream
         audio_streams = self.yt.streams.filter(only_audio=True).all()
         stream = self._best_stream(audio_streams)
         stream.download(destination, filename=self.title)

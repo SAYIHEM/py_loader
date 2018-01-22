@@ -1,2 +1,2 @@
 class FileNotFoundException(Exception):
-    '''Raise this when a file is not found on disk'''
+    """Raise this when a file is not found on disk"""

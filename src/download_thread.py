@@ -4,9 +4,6 @@ from converter import Converter
 from pathlib import Path
 import logging
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
 class DownloadThread(Thread):
 
     logger = logging.getLogger(__name__)
@@ -17,7 +14,7 @@ class DownloadThread(Thread):
     dir_download = None
 
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):
-        super(DownloadThread, self).__init__(group=group, target=target, name=name, verbose=verbose)
+        super(DownloadThread, self).__init__(group=group, target=target, name=name)
 
         self.args = args
         self.kwargs = kwargs
@@ -30,6 +27,7 @@ class DownloadThread(Thread):
     def run(self):
 
         self.logger.info("New Thread for downloading and converting.")
+        self.logger.error("ROOOR")
 
         # Get url from message
         url = self.update.message.text
