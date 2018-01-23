@@ -3,18 +3,16 @@ import threading
 from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-
-from pyloader.downloading import regex
-from pyloader.downloading.download_thread import DownloadThread
-
+from pyloader.downloading import yt_link
+from pyloader.downloading import DownloadThread
 from logging import Handler
 import logging
-
 import time
 import datetime
+from pyloader.exceptions import IllegalArgumentException
+
 
 # Globals
-
 dir_temp = "/home/pi/py_loader/temp"
 dir_download = "/home/pi/music/downloads"
 my_chat_id = 341971901  # ID of private bot chat
@@ -125,7 +123,6 @@ class TelegramServer:
     updater = None
 
     def __init__(self, token):
-
         self.updater = Updater(token)
         self._set_handler()
 
@@ -135,7 +132,7 @@ class TelegramServer:
 
     # TODO: send audio
     def _set_handler(self):
-        self.updater.dispatcher.add_handler(RegexHandler(regex.yt_link, regex_download))
+        self.updater.dispatcher.add_handler(RegexHandler(yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
         self.updater.dispatcher.add_handler(CommandHandler("ping", ping))
         self.updater.dispatcher.add_handler(CommandHandler("reboot", reboot))

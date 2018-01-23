@@ -1,7 +1,6 @@
 # coding=utf-8
 import moviepy.editor as mp
 from pathlib import Path
-
 import logging
 import os
 
