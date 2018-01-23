@@ -2,6 +2,7 @@
 import os
 from sh import sudo
 import logging
+from pyloader.config import PyLoaderConfig
 
 from pyloader.server.telegramserver import TelegramServer
 
@@ -24,11 +25,6 @@ def reboot_service(timeout=0):
     logger = logging.getLogger(__name__)
 
     # Restart system service
-    os.system("sudo systemctl restart pyloader.service >> /home/pi/logs/py_loader.err 2>> /home/pi/logs/py_loader.log &")
-    # TODO: remove hardcoded paths
-
-    #err = str(sudo("/bin/systemctl", "restart", "pyloader.service", ">>", "/home/pi/logs/e.err", "2>>", "/home/pi/logs/l.err"))
-    #if err:
-    #    logger.error(err)
+    os.system("sudo systemctl restart pyloader.service >> "+PyLoaderConfig.dir_err+" 2>> "+PyLoaderConfig.dir_log+" &")
 
 
