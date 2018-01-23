@@ -4,6 +4,7 @@ import logging
 import re
 from pathlib import Path
 
+__all__ = ["YTLoader"]
 
 class YTLoader:
 

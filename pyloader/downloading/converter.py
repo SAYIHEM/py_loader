@@ -5,6 +5,7 @@ from pathlib import Path
 import logging
 import os
 
+__all__ = ["Converter"]
 
 class Converter:
 

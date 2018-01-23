@@ -10,7 +10,7 @@ def main():
 
     global telegram_server
     global logger
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("pyloader.main")
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

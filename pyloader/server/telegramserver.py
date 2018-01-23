@@ -2,8 +2,8 @@ from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
 
-#from pyloader.py_loader import reboot_service
-
+from pyloader.downloading import regex
+from pyloader.downloading.download_thread import DownloadThread
 
 from logging import Handler
 import logging
@@ -12,14 +12,12 @@ import time
 import datetime
 
 # Globals
-from pyloader.downloading import regex
-from pyloader.downloading.download_thread import DownloadThread
 
 dir_temp = "/home/pi/py_loader/temp"
 dir_download = "/home/pi/music/downloads"
-my_chat_id = 341971901 # ID of private bot chat
+my_chat_id = 341971901  # ID of private bot chat
 
-#__all__ = ["TelegramServer"]
+__all__ = ["TelegramServer"]
 
 
 def error_callback(bot, update, error):
@@ -83,19 +81,23 @@ def reboot(bot, update):
 
     logger.info("User: {name} [{id}] initialized reboot.".format(name=user.username, id=user.id))
 
-    timeout = update.message.text
+    timeout = update.message.text.split(" ")[1] # TODO: Fix out of bounds when no time
     if timeout.isdigit():
-        msg_time = update.message.text.date #datetime.datetime.now().time()
+        timeout = int(timeout)
+
+        msg_time = update.message.date #datetime.datetime.now().time()
         reboot_time = msg_time + datetime.timedelta(seconds=timeout)
 
-        logger.info("System ")
+        log = "Rebooting at {time}".format(time=reboot_time)
+        logger.info(log)
 
-        bot.send_message(chat_id=chat_id, text="Rebooting at {time}".format(time=reboot_time))
+        bot.send_message(chat_id=chat_id, text=log)
         time.sleep(timeout)
 
     bot.send_message(chat_id=chat_id, text="Reboot now!")
 
-    #reboot_service() # TODO
+    from pyloader.py_loader import reboot_service
+    reboot_service()
 
     pass
 
@@ -131,7 +133,7 @@ class TelegramServer:
         self.updater.dispatcher.add_handler(RegexHandler(regex.yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
         self.updater.dispatcher.add_handler(CommandHandler("ping", ping))
-        #self.updater.dispatcher.add_handler(CommandHandler("reboot", reboot))
+        self.updater.dispatcher.add_handler(CommandHandler("reboot", reboot))
 
         self.logger.debug("Set up handler.")
 
