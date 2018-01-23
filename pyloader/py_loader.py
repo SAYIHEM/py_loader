@@ -7,6 +7,7 @@ from pyloader.server.telegramserver import TelegramServer
 
 __all__ = ["PyLoader", "reboot_service"]
 
+
 class PyLoader():
     telegram_server = None
     logger = logging.getLogger(__name__)

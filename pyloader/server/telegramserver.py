@@ -1,3 +1,5 @@
+import threading
+
 from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
@@ -81,7 +83,7 @@ def reboot(bot, update):
 
     logger.info("User: {name} [{id}] initialized reboot.".format(name=user.username, id=user.id))
 
-    timeout = update.message.text.split(" ")[1] # TODO: Fix out of bounds when no time
+    timeout = update.message.text.split(" ")[1] # TODO: Fix out of bounds when no time -> function to make list of args
     if timeout.isdigit():
         timeout = int(timeout)
 
@@ -92,14 +94,17 @@ def reboot(bot, update):
         logger.info(log)
 
         bot.send_message(chat_id=chat_id, text=log)
-        time.sleep(timeout)
 
-    bot.send_message(chat_id=chat_id, text="Reboot now!")
+        def reboot_after_timeout(t):
+            print(t)
+            from pyloader.py_loader import reboot_service
+            time.sleep(t)
 
-    from pyloader.py_loader import reboot_service
-    reboot_service()
+            bot.send_message(chat_id=chat_id, text="Reboot now!")
+            reboot_service()
 
-    pass
+        t = threading.Thread(target=reboot_after_timeout, args=(timeout,))
+        t.start()
 
 
 class TelegramServer:
