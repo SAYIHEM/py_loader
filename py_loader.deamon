@@ -10,7 +10,7 @@
 ### END INIT INFO
 
 dir="/home/pi/py_loader"
-cmd="/usr/local/bin/python3.6 /home/pi/py_loader/src/main.py "
+cmd="/usr/local/bin/python3.6 /home/pi/py_loader/src/py_loader.py "
 user="root"
 
 name=`basename $0`
