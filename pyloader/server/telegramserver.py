@@ -1,18 +1,25 @@
 from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from downloading.download_thread import DownloadThread
+
+#from pyloader.py_loader import reboot_service
+
+
 from logging import Handler
 import logging
-from downloading import regex
+
+import time
+import datetime
 
 # Globals
+from pyloader.downloading import regex
+from pyloader.downloading.download_thread import DownloadThread
+
 dir_temp = "/home/pi/py_loader/temp"
 dir_download = "/home/pi/music/downloads"
 my_chat_id = 341971901 # ID of private bot chat
 
-__all__ = ["TelegramServer"]
+#__all__ = ["TelegramServer"]
 
 
 def error_callback(bot, update, error):
@@ -68,6 +75,31 @@ def ping(bot, update):
     bot.send_message(chat_id=chat_id, text="ping")
 
 
+def reboot(bot, update):
+    logger = logging.getLogger(__name__)
+
+    chat_id = update.message.chat_id
+    user = update.message.from_user
+
+    logger.info("User: {name} [{id}] initialized reboot.".format(name=user.username, id=user.id))
+
+    timeout = update.message.text
+    if timeout.isdigit():
+        msg_time = update.message.text.date #datetime.datetime.now().time()
+        reboot_time = msg_time + datetime.timedelta(seconds=timeout)
+
+        logger.info("System ")
+
+        bot.send_message(chat_id=chat_id, text="Rebooting at {time}".format(time=reboot_time))
+        time.sleep(timeout)
+
+    bot.send_message(chat_id=chat_id, text="Reboot now!")
+
+    #reboot_service() # TODO
+
+    pass
+
+
 class TelegramServer:
 
     class OnErrorHandler(Handler): # TODO: make as singleton to send from everywhere
@@ -80,7 +112,6 @@ class TelegramServer:
         def __init__(self, updater, level=logging.ERROR):
             super().__init__(level)
             self.updater = updater
-
 
     logger = logging.getLogger(__name__)
 
@@ -100,6 +131,7 @@ class TelegramServer:
         self.updater.dispatcher.add_handler(RegexHandler(regex.yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
         self.updater.dispatcher.add_handler(CommandHandler("ping", ping))
+        #self.updater.dispatcher.add_handler(CommandHandler("reboot", reboot))
 
         self.logger.debug("Set up handler.")
 

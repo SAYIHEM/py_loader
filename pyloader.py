@@ -1,16 +1,17 @@
-# coding=utf-8
-from telegramserver import TelegramServer
-from logging import StreamHandler
+from pyloader.py_loader import PyLoader
 import logging
+from logging import StreamHandler
+import sys
 import coloredlogs
 import atexit
-import sys
 
 
-server = None
-logger = logging.getLogger("main")
+def main():
 
-if __name__ == "__main__":
+    global telegram_server
+    global logger
+    logger = logging.getLogger(__name__)
+
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -20,21 +21,24 @@ if __name__ == "__main__":
     logger.addHandler(console_handler)
     coloredlogs.install()
 
-    # Start Telegram server
-    server = TelegramServer('548165005:AAGUTShuLphcrMwGbhDcfVndQ009zjHuFHk')
-    #server.add_handler(CommandHandler("d", download))
-    server.start()
+    py_loader = PyLoader()
+    py_loader.run()
+    telegram_server = py_loader.telegram_server
+
+
+if __name__ == "__main__":
+    main()
 
 
 @atexit.register
 def at_exit():
 
-    if server is not None:
-        server.updater.stop()
+    if telegram_server is not None:
+        telegram_server.updater.stop()
     else:
         logger.debug("'server' was None!")
 
-    if server.updater.running:
+    if telegram_server.updater.running:
         logger.error("Could not stop telegram server!")
     else:
         logger.info("Telegram server offline.")

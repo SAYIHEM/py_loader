@@ -1,10 +1,10 @@
 from threading import Thread
-from downloading.ytloader import YTLoader
-from downloading.converter import Converter
+
 from pathlib import Path
 import logging
 
 __all__ = ["DownloadThread"]
+
 
 class DownloadThread(Thread):
 
