@@ -1,4 +1,4 @@
-from pyloader.handler import OnErrorHandler
+from pyloader.handler import OnExceptionHandler
 from pyloader import PyLoader
 from pyloader.config import PyLoaderConfig
 import logging
@@ -14,7 +14,7 @@ def main():
     global logger
     logger = logging.getLogger()
 
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.CRITICAL,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     console_handler = StreamHandler(sys.stdout)
@@ -26,8 +26,8 @@ def main():
     py_loader = PyLoader()
     telegram_server = py_loader.telegram_server
 
-    logger.addHandler(OnErrorHandler(updater=py_loader.telegram_server.updater,
-                                     chat_id=PyLoaderConfig.admin_chat_id))
+    logger.addHandler(OnExceptionHandler(updater=py_loader.telegram_server.updater,
+                                         chat_id=PyLoaderConfig.admin_chat_id))
     py_loader.run()
 
 

@@ -11,57 +11,52 @@ from telegram.ext import Updater, CommandHandler, RegexHandler
 from pyloader.config import PyLoaderConfig
 from pyloader.downloading import DownloadThread
 from pyloader.downloading import Regex
+from pyloader.exceptions import FileNotFoundException
 
 __all__ = ["TelegramServer"]
 
 
 def error_callback(bot, update, error):
-
     logger = logging.getLogger("telegramserver.error")
 
     try:
         raise error
-    except Unauthorized:
-        error = traceback.format_exc()
-        logger.error(error)
+    except Unauthorized as e:
+        logger.error(e.message)
     # remove update.message.chat_id from conversation list
-    except BadRequest:
-        error = traceback.format_exc()
-        logger.error(error)
+    except BadRequest as e:
+        logger.error(e.message)
     # handle malformed requests - read more below!
-    except TimedOut:
-        error = traceback.format_exc()
-        logger.error(error)
+    except TimedOut as e:
+        logger.error(e.message)
     # handle slow connection problems
-    except NetworkError:
-        error = traceback.format_exc()
-        logger.error(error)
+    except NetworkError as e:
+        logger.error(e.message)
     # handle other connection problems
     except ChatMigrated as e:
-        error = traceback.format_exc()
-        logger.error(error)
+        logger.error(e.message)
     # the chat_id of a group has changed, use e.new_chat_id instead
-    except TelegramError:
-        error = traceback.format_exc()
-        logger.error(error)
+    except TelegramError as e:
+        logger.error(e.message)
 
 
 def regex_download(bot, update):
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
     logger.debug("Found regex-pattern for YouTube link!")
 
     try:
         # TODO: avoid download video multiple times with "Thread map"
         thread = DownloadThread(args=(update, PyLoaderConfig.dir_temp, PyLoaderConfig.dir_download,))
         thread.start()
-    except Exception as e:
+    except Exception:
         error = traceback.format_exc()
-        logger.error(error)
+        logger.critical(error)
 
 
 def ping(bot, update):
     chat_id = update.message.chat_id
     bot.send_message(chat_id=chat_id, text="ping")
+
 
 def reboot(bot, update):
     logger = logging.getLogger(__name__)

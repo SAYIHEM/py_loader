@@ -6,6 +6,7 @@ from pathlib import Path
 
 __all__ = ["YTLoader"]
 
+
 class YTLoader:
 
     logger = logging.getLogger(__name__)

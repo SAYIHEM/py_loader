@@ -28,28 +28,39 @@ class DownloadThread(Thread):
         self.dir_download = self.args[2]
 
     def run(self):
-
         self.logger.info("New Thread for downloading and converting.")
 
         # Get url from message
         url = self.update.message.text
 
-        loader = YTLoader(url)
-        video = loader.download(self.dir_temp)
+        # Download
+        loader = None
+        audio = None
+        try:
+            loader = YTLoader(url)
+            audio = loader.download(self.dir_temp)
+        except Exception as e:
+            error = traceback.format_exc()
+            self.logger.critical(error)
+            return
 
-        self.logger.debug("Converting: " + str(video))
+        self.logger.debug("Converting: " + str(audio))
 
         file_out = Path(self.dir_download, loader.title + ".mp3")
 
         # Convert
-        converter = Converter(video)
-        converter.to_mp3(file_out)
+        try:
+            converter = Converter(audio)
+            converter.to_mp3(file_out)
+        except Exception as e:
+            error = "There was an error:\n" + traceback.format_exc()
+            self.logger.critical(error)
 
         # Delete video file
         try:
-            video.unlink()
+            audio.unlink()
         except Exception as e:
-            self.logger.error("Cannot delete File: " + str(e))
+            self.logger.critical("Cannot delete File: " + str(e))
 
         # Reply message
         self.update.message.reply_text('Downloaded: \n{}'.format(loader.title))

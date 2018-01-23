@@ -1,3 +1,3 @@
-from .onerror_handler import OnErrorHandler
+from .onexception_handler import OnExceptionHandler
 
-__all__ = ["OnErrorHandler"]
+__all__ = ["OnExceptionHandler"]
