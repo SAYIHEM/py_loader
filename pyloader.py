@@ -1,4 +1,6 @@
-from pyloader.py_loader import PyLoader
+from pyloader.handler import OnErrorHandler
+from pyloader import PyLoader
+from pyloader.config import PyLoaderConfig
 import logging
 from logging import StreamHandler
 import sys
@@ -10,7 +12,7 @@ def main():
 
     global telegram_server
     global logger
-    logger = logging.getLogger("pyloader.main")
+    logger = logging.getLogger()
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -22,8 +24,11 @@ def main():
     coloredlogs.install()
 
     py_loader = PyLoader()
-    py_loader.run()
     telegram_server = py_loader.telegram_server
+
+    logger.addHandler(OnErrorHandler(updater=py_loader.telegram_server.updater,
+                                     chat_id=PyLoaderConfig.admin_chat_id))
+    py_loader.run()
 
 
 if __name__ == "__main__":

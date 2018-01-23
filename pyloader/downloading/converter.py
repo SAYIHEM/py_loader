@@ -1,10 +1,12 @@
 # coding=utf-8
+from pyloader.exceptions import FileNotFoundException
 import moviepy.editor as mp
 from pathlib import Path
 import logging
 import os
 
 __all__ = ["Converter"]
+
 
 class Converter:
 
@@ -18,8 +20,7 @@ class Converter:
         if not isinstance(file, Path):
             file = Path(file)
         if not file.is_file():
-            self.logger.error("Invalid path: " + str(file))
-            raise FileNotFoundException()
+            raise FileNotFoundException("Invalid path: " + str(file))
 
         self.file = file
 
@@ -39,5 +40,5 @@ class Converter:
                                    bitrate='320k',
                                    ffmpeg_params=None,
                                    write_logfile=False,
-                                   verbose=True,
-                                   progress_bar=True)
+                                   verbose=False,
+                                   progress_bar=False)
