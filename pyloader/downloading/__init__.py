@@ -1,6 +1,6 @@
 from .converter import Converter
 from .ytloader import YTLoader
 from .download_thread import DownloadThread
-from .regex import yt_link
+from .regex import Regex
 
-__all__ = ["Converter", "DownloadThread", "yt_link", "YTLoader"]
+__all__ = ["Converter", "DownloadThread", "Regex", "YTLoader"]

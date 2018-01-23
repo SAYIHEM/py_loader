@@ -3,7 +3,7 @@ import threading
 from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from pyloader.downloading import yt_link
+from pyloader.downloading import Regex
 from pyloader.downloading import DownloadThread
 from logging import Handler
 import logging
@@ -132,7 +132,7 @@ class TelegramServer:
 
     # TODO: send audio
     def _set_handler(self):
-        self.updater.dispatcher.add_handler(RegexHandler(yt_link, regex_download))
+        self.updater.dispatcher.add_handler(RegexHandler(Regex.yt_link, regex_download))
         self.updater.dispatcher.add_error_handler(error_callback)
         self.updater.dispatcher.add_handler(CommandHandler("ping", ping))
         self.updater.dispatcher.add_handler(CommandHandler("reboot", reboot))
