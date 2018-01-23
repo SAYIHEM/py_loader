@@ -19,7 +19,7 @@ class YTLoader:
         self.yt = YouTube(url)
 
         # Remove UTF-8 characters from title
-        self.title = self._toPath(self.yt.title)
+        self.title = self._to_path(self.yt.title)
 
     def download(self, destination="temp"):
 
@@ -36,7 +36,7 @@ class YTLoader:
         self.logger.debug("List of audio streams: " + str(audio_streams))
         self.logger.debug("Selecting: " + str(stream))
 
-        file = self._toPath(self.title) # TODO remove double '_toPath'
+        file = self.title
         extension = "." + str(stream.mime_type.split("/")[1])
 
         return Path(destination, file + extension)
@@ -51,10 +51,7 @@ class YTLoader:
 
         return stream
 
-    def _path(self, s):
-        return s.encode('ascii', errors='ignore')
-
-    def _toPath(self, s, max_length=255):
+    def _to_path(self, s, max_length=255):
         """Sanitize a string making it safe to use as a filename.
 
         This function was based off the limitations outlined here:
