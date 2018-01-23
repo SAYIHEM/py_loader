@@ -1,16 +1,18 @@
 from telegram.ext import Updater, CommandHandler, RegexHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from IllegalArgumentException import IllegalArgumentException
-from download_thread import DownloadThread
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from downloading.download_thread import DownloadThread
 from logging import Handler
 import logging
-import regex
+from downloading import regex
 
 # Globals
 dir_temp = "/home/pi/py_loader/temp"
 dir_download = "/home/pi/music/downloads"
 my_chat_id = 341971901 # ID of private bot chat
+
+__all__ = ["TelegramServer"]
 
 
 def error_callback(bot, update, error):
