@@ -1,8 +1,9 @@
 # coding=utf-8
-from pytube import YouTube
 import logging
 import re
 from pathlib import Path
+
+from pytube import YouTube
 
 __all__ = ["YTLoader"]
 

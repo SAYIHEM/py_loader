@@ -1,25 +1,27 @@
-from pyloader.handler import OnExceptionHandler
-from pyloader import PyLoader
-from pyloader.config import PyLoaderConfig
-import logging
-from logging import StreamHandler
-import sys
-import coloredlogs
 import atexit
+import logging
+import sys
+from logging import StreamHandler
 
+import coloredlogs
+
+from pyloader import PyLoader
+from pyloader.handler import OnExceptionHandler
+from pyloader import Config
 
 def main():
+
 
     global telegram_server
     global logger
     logger = logging.getLogger()
 
     logging.basicConfig(level=logging.CRITICAL,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     console_handler = StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     logger.addHandler(console_handler)
     coloredlogs.install()
 
@@ -27,7 +29,7 @@ def main():
     telegram_server = py_loader.telegram_server
 
     logger.addHandler(OnExceptionHandler(updater=py_loader.telegram_server.updater,
-                                         chat_id=PyLoaderConfig.admin_chat_id))
+                                         chat_id=Config.admin_chat_id))
     py_loader.run()
 
 

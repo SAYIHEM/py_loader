@@ -1,5 +1,5 @@
-from .converter import Converter
 from .ytloader import YTLoader
+from .converter import Converter
 from .download_thread import DownloadThread
 from .regex import Regex
 

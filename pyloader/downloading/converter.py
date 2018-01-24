@@ -1,9 +1,11 @@
 # coding=utf-8
-from pyloader.exceptions import FileNotFoundException
-import moviepy.editor as mp
-from pathlib import Path
 import logging
 import os
+from pathlib import Path
+
+import moviepy.editor as mp
+
+from pyloader.exceptions import FileNotFoundException
 
 __all__ = ["Converter"]
 

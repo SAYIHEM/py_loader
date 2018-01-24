@@ -8,10 +8,10 @@ from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
 from telegram.ext import Updater, CommandHandler, RegexHandler
 
-from pyloader.config import PyLoaderConfig
+from pyloader import Config
 from pyloader.downloading import DownloadThread
 from pyloader.downloading import Regex
-from pyloader.exceptions import FileNotFoundException
+from pyloader.server import ArgList
 
 __all__ = ["TelegramServer"]
 
@@ -46,8 +46,9 @@ def regex_download(bot, update):
 
     try:
         # TODO: avoid download video multiple times with "Thread map"
-        thread = DownloadThread(args=(update, PyLoaderConfig.dir_temp, PyLoaderConfig.dir_download,))
+        thread = DownloadThread(args=(update, Config.dir_temp, Config.dir_download,))
         thread.start()
+        pass
     except Exception:
         error = traceback.format_exc()
         logger.critical(error)
@@ -66,7 +67,21 @@ def reboot(bot, update):
 
     logger.info("User: {name} [{id}] initialized reboot.".format(name=user.username, id=user.id))
 
-    timeout = update.message.text.split(" ")[1] # TODO: Fix out of bounds when no time -> function to make list of args
+    timeout = "no_timeout"
+    arglist = ArgList(update.message)
+    if arglist[0] is not None:
+        timeout = arglist[0]
+
+    def reboot_after_timeout(t):
+        time.sleep(t)
+        reboot_now()
+
+    def reboot_now():
+        bot.send_message(chat_id=chat_id, text="Reboot now!")
+
+        from pyloader.py_loader import reboot_service
+        reboot_service()
+
     if timeout.isdigit():
         timeout = int(timeout)
 
@@ -78,16 +93,11 @@ def reboot(bot, update):
 
         bot.send_message(chat_id=chat_id, text=log)
 
-        def reboot_after_timeout(t):
-            print(t)
-            from pyloader.py_loader import reboot_service
-            time.sleep(t)
-
-            bot.send_message(chat_id=chat_id, text="Reboot now!")
-            reboot_service()
-
         t = threading.Thread(target=reboot_after_timeout, args=(timeout,))
         t.start()
+
+    else:
+        reboot_now()
 
 
 class TelegramServer:

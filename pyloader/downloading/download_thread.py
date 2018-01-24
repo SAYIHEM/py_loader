@@ -1,7 +1,8 @@
-import traceback
-from threading import Thread
-from pathlib import Path
 import logging
+import traceback
+from pathlib import Path
+from threading import Thread
+
 from pyloader.downloading import Converter, YTLoader
 
 __all__ = ["DownloadThread"]
