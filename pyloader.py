@@ -6,7 +6,7 @@ from logging import StreamHandler
 import coloredlogs
 
 from pyloader import PyLoader
-from pyloader.handler import OnExceptionHandler
+from pyloader.handler import NotifyOnException
 from pyloader import Config
 
 def main():
@@ -28,8 +28,8 @@ def main():
     py_loader = PyLoader()
     telegram_server = py_loader.telegram_server
 
-    logger.addHandler(OnExceptionHandler(updater=py_loader.telegram_server.updater,
-                                         chat_id=Config.admin_chat_id))
+    logger.addHandler(NotifyOnException(updater=py_loader.telegram_server.updater,
+                                        chat_id=Config.id_admin))
     py_loader.run()
 
 

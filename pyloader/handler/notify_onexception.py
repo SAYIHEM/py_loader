@@ -1,18 +1,17 @@
 import logging
 from logging import Handler
+from pyloader import Config
 
-__all__ = ["OnExceptionHandler"]
+__all__ = ["NotifyOnException"]
 
 
-class OnExceptionHandler(Handler):
+class NotifyOnException(Handler):
 
     updater = None
     chat_id = None
 
     def emit(self, record):
-
-        err = "There was an error:\n" + record.msg
-        self.updater.bot.send_message(chat_id=self.chat_id, text=err)
+        self.updater.bot.send_message(Config.id_admin, "There was an error:\n" + record.msg)
 
     def __init__(self, updater, chat_id, level=logging.CRITICAL):
         super().__init__(level)

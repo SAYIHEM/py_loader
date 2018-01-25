@@ -6,12 +6,13 @@ import traceback
 
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from telegram.ext import Updater, CommandHandler, RegexHandler
+from telegram.ext import Updater, CommandHandler, RegexHandler, Filters
 
 from pyloader import Config
 from pyloader.downloading import DownloadThread
 from pyloader.downloading import Regex
 from pyloader.server import ArgList
+from pyloader.server.user_groups import root
 
 __all__ = ["TelegramServer"]
 
@@ -55,14 +56,13 @@ def regex_download(bot, update):
 
 
 def ping(bot, update):
-    chat_id = update.message.chat_id
-    bot.send_message(chat_id=chat_id, text="ping")
+    update.message.reply_text("ping") # TODO: ping with millis
 
 
+@root
 def reboot(bot, update):
     logger = logging.getLogger(__name__)
 
-    chat_id = update.message.chat_id
     user = update.message.from_user
 
     logger.info("User: {name} [{id}] initialized reboot.".format(name=user.username, id=user.id))
@@ -77,7 +77,7 @@ def reboot(bot, update):
         reboot_now()
 
     def reboot_now():
-        bot.send_message(chat_id=chat_id, text="Reboot now!")
+        update.message.reply_text("Reboot now!")
 
         from pyloader.py_loader import reboot_service
         reboot_service()
@@ -91,7 +91,7 @@ def reboot(bot, update):
         log = "Rebooting at {time}".format(time=reboot_time)
         logger.info(log)
 
-        bot.send_message(chat_id=chat_id, text=log)
+        update.message.reply_text(log)
 
         t = threading.Thread(target=reboot_after_timeout, args=(timeout,))
         t.start()

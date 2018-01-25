@@ -54,7 +54,7 @@ class DownloadThread(Thread):
             converter = Converter(audio)
             converter.to_mp3(file_out)
         except Exception as e:
-            error = "There was an error:\n" + traceback.format_exc()
+            error = traceback.format_exc()
             self.logger.critical(error)
 
         # Delete video file

@@ -1,3 +1,3 @@
-from .onexception_handler import OnExceptionHandler
+from .notify_onexception import NotifyOnException
 
-__all__ = ["OnExceptionHandler"]
+__all__ = ["NotifyOnException"]

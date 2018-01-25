@@ -1,4 +1,4 @@
-from .Config import Config
+from .config import Config
 from pyloader import downloading
 from pyloader import exceptions
 from pyloader import handler

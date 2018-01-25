@@ -9,4 +9,4 @@ class Config:
 
     bot_token = "548165005:AAGUTShuLphcrMwGbhDcfVndQ009zjHuFHk"
 
-    admin_chat_id = 341971901  # ID of private bot chat
+    id_admin = 341971901  # ID of private bot chat
