@@ -29,7 +29,7 @@ def main():
     telegram_server = py_loader.telegram_server
 
     logger.addHandler(NotifyOnException(updater=py_loader.telegram_server.updater,
-                                        chat_id=Config.id_admin))
+                                        chat_id=Config.admin_chat_id))
     py_loader.run()
 
 

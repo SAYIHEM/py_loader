@@ -22,7 +22,7 @@ class PyLoader:
         self.telegram_server.start()
 
 
-def reboot_service(timeout=0):
+def reboot_service():
     logger = logging.getLogger(__name__)
 
     # Restart system service

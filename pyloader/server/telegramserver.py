@@ -47,7 +47,7 @@ def regex_download(bot, update):
 
     try:
         # TODO: avoid download video multiple times with "Thread map"
-        thread = DownloadThread(args=(update, Config.dir_temp, Config.dir_download,))
+        thread = DownloadThread(args=(update,))
         thread.start()
         pass
     except Exception:
