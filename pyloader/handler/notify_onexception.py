@@ -11,7 +11,7 @@ class NotifyOnException(Handler):
     chat_id = None
 
     def emit(self, record):
-        self.updater.bot.send_message(Config.id_admin, "There was an error:\n" + record.msg)
+        self.updater.bot.send_message(Config.admin_chat_id, "There was an error:\n" + record.msg)
 
     def __init__(self, updater, chat_id, level=logging.CRITICAL):
         super().__init__(level)

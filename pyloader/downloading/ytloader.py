@@ -33,6 +33,21 @@ class YTLoader:
 
         path = Config.dir_download + "/%(title)s.%(ext)s"
 
+        class Log(object):
+            logger = logging.getLogger("downloader")
+
+            def info(self, msg):
+                self.logger.info(msg)
+
+            def debug(self, msg):
+                self.logger.info(msg)
+
+            def warning(self, msg):
+                self.logger.info(msg)
+
+            def error(self, msg):
+                self.logger.error(msg)
+
         ydl_opts = {
             'outtmpl': path,
             'format': 'bestaudio/best',
@@ -42,7 +57,7 @@ class YTLoader:
                 'preferredquality': '192',
             }],
             # TODO: LOG!
-            # 'logger': self.logger,
+            'logger': Log(),
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])
