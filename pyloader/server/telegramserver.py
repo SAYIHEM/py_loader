@@ -4,15 +4,17 @@ import threading
 import time
 import traceback
 
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from telegram.ext import Updater, CommandHandler, RegexHandler, Filters
+from telegram.ext import Updater, CommandHandler, RegexHandler, Filters, CallbackQueryHandler
 
 from pyloader import Config
 from pyloader.downloading import DownloadThread
 from pyloader.downloading import Regex
 from pyloader.server import ArgList
 from pyloader.server.user_groups import root
+from pyloader.tools import build_menu
 
 __all__ = ["TelegramServer"]
 
@@ -47,7 +49,7 @@ def regex_download(bot, update):
 
     try:
         # TODO: avoid download video multiple times with "Thread map"
-        thread = DownloadThread(args=(update,))
+        thread = DownloadThread(args=(bot, update,))
         thread.start()
         pass
     except Exception:
@@ -99,6 +101,18 @@ def reboot(bot, update):
     else:
         reboot_now()
 
+def test(bot, update):
+
+    button_list = [
+        InlineKeyboardButton("col1", callback_data="B1"),
+        InlineKeyboardButton("col2", callback_data="B2"),
+        InlineKeyboardButton("row 2", callback_data="B3")
+    ]
+    reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=1))
+    bot.send_message(Config.admin_chat_id, "Save track to...", reply_markup=reply_markup)
+
+def call(bot, update):
+    bool = bot.answer_callback_query(update.callback_query.id, "TEST", "")
 
 class TelegramServer:
 
@@ -121,6 +135,9 @@ class TelegramServer:
         self.updater.dispatcher.add_error_handler(error_callback)
         self.updater.dispatcher.add_handler(CommandHandler("ping", ping))
         self.updater.dispatcher.add_handler(CommandHandler("reboot", reboot))
+
+        self.updater.dispatcher.add_handler(CommandHandler("test", test))
+        self.updater.dispatcher.add_handler(CallbackQueryHandler(call))
 
         self.logger.debug("Set up handler.")
 
