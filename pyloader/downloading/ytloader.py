@@ -1,44 +1,68 @@
 # coding=utf-8
-from pytube import YouTube
 import logging
 import re
+import youtube_dl
 from pathlib import Path
+from pyloader import Config
 
 __all__ = ["YTLoader"]
+
 
 class YTLoader:
 
     logger = logging.getLogger(__name__)
 
-    yt = None
+    url = None
     title = None
 
     def __init__(self, url):
 
-        self.yt = YouTube(url)
+        # TODO: Check url
+        self.url = url
 
-        # Remove UTF-8 characters from title
-        self.title = self._toPath(self.yt.title)
+        with youtube_dl.YoutubeDL() as ydl:
+            info_dict = ydl.extract_info(self.url, download=False)
+            self.title = info_dict.get('title', None)
 
-    def download(self, destination="temp"):
+    def download(self, destination="downloads"):
 
         # Create destination when not existing
         path = Path(destination)
         if not path.exists():
             path.mkdir(parents=True)
 
-        # Select audio stream
-        audio_streams = self.yt.streams.filter(only_audio=True).all()
-        stream = self._best_stream(audio_streams)
-        stream.download(destination, filename=self.title)
+        path = Config.dir_download + "/%(title)s.%(ext)s"
 
-        self.logger.debug("List of audio streams: " + str(audio_streams))
-        self.logger.debug("Selecting: " + str(stream))
+        class Log(object):
+            logger = logging.getLogger("downloader")
 
-        file = self._toPath(self.title) # TODO remove double '_toPath'
-        extension = "." + str(stream.mime_type.split("/")[1])
+            def info(self, msg):
+                self.logger.info(msg)
 
-        return Path(destination, file + extension)
+            def debug(self, msg):
+                self.logger.info(msg)
+
+            def warning(self, msg):
+                self.logger.info(msg)
+
+            def error(self, msg):
+                self.logger.error(msg)
+
+        ydl_opts = {
+            'outtmpl': path,
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            # TODO: LOG!
+            'logger': Log(),
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([self.url])
+
+        return Path(path)
 
     def _best_stream(self, steam_list):
         stream = steam_list[0]
@@ -50,10 +74,7 @@ class YTLoader:
 
         return stream
 
-    def _path(self, s):
-        return s.encode('ascii', errors='ignore')
-
-    def _toPath(self, s, max_length=255):
+    def _to_path(self, s, max_length=255):
         """Sanitize a string making it safe to use as a filename.
 
         This function was based off the limitations outlined here:
