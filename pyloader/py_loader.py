@@ -12,8 +12,6 @@ class PyLoader:
     telegram_server = None
     logger = logging.getLogger(__name__)
 
-
-
     def __init__(self):
         self.telegram_server = TelegramServer(Config.bot_token)
 

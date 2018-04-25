@@ -5,7 +5,7 @@ from threading import Thread
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from pyloader import Config
-from pyloader.downloading import Converter, YTLoader
+from pyloader.downloading import YTLoader
 from pyloader.tools import build_menu
 
 __all__ = ["DownloadThread"]
@@ -15,29 +15,39 @@ class DownloadThread(Thread):
 
     logger = logging.getLogger(__name__)
 
-    bot = None
-    update = None
+    queue = None
 
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):
-        super(DownloadThread, self).__init__(group=group, target=target, name=name)
+        super().__init__(group=group, target=target, name=name)
 
         self.args = args
         self.kwargs = kwargs
 
         # TODO: Pass parameters better
-        self.bot = self.args[0]
-        self.update = self.args[1]
+        self.queue = self.args[0]
 
     def run(self):
-        self.logger.info("New Thread for downloading and converting.")
+        while True:
+            if not self.queue.empty():
+                job = self.queue.get()
+
+                self.logger.info('Processing Job: {id} [{count}/{size}]'
+                                 .format(id=str(job.id),
+                                         count=str(self.queue.qsize() + 1),
+                                         size=str(self.queue.maxsize)))
+
+                self.__process_download(job)
+
+    def __process_download(self, job):
 
         # Get url from message
-        url = self.update.message.text
+        url = job.update.message.text
 
-        genre_dirs = ["Hardstyle", "Rawstyle", "Hardcore", "Frenchcore"]  # TODO: config file with directory shortcuts -> function to add new
-        button_list = [InlineKeyboardButton(s, callback_data=s) for s in genre_dirs]
-        reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
-        self.bot.send_message(self.update.message.chat_id, "Save track to one of the directories...", reply_markup=reply_markup)
+        # TODO: implement Save to dircetory
+        # genre_dirs = ["Hardstyle", "Rawstyle", "Hardcore", "Frenchcore"]  # TODO: config file with directory shortcuts -> function to add new
+        # button_list = [InlineKeyboardButton(s, callback_data=s) for s in genre_dirs]
+        # reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
+        # self.bot.send_message(self.update.message.chat_id, "Save track to one of the directories...", reply_markup=reply_markup)
 
         # Download
         try:
@@ -48,6 +58,10 @@ class DownloadThread(Thread):
             self.logger.critical(error)
             return
 
+        # Finish queue task
+        self.queue.task_done()
+
         # Reply message
-        self.update.message.reply_text('Downloaded: \n{}'.format(loader.title))
+        job.update.message.reply_text('Downloaded: \n{}'.format(loader.title))
         self.logger.info("Done converting: " + loader.title)
+
