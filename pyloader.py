@@ -21,7 +21,7 @@ def main():
 
     console_handler = StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    #console_handler.setFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     logger.addHandler(console_handler)
     coloredlogs.install()
 

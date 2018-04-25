@@ -57,7 +57,7 @@ class YTLoader:
                 'preferredquality': '192',
             }],
             # TODO: LOG!
-            'logger': Log(),
+            #'logger': Log(),
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])

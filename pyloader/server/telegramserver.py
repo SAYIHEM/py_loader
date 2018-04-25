@@ -2,7 +2,6 @@ import datetime
 import logging
 import threading
 import time
-import traceback
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
@@ -10,8 +9,7 @@ from telegram.error import (TelegramError, Unauthorized, BadRequest,
 from telegram.ext import Updater, CommandHandler, RegexHandler, Filters, CallbackQueryHandler
 
 from pyloader import Config
-from pyloader.downloading import DownloadThread
-from pyloader.downloading import Regex
+from pyloader.downloading import Regex, ThreadLimiter, Job
 from pyloader.server import ArgList
 from pyloader.server.user_groups import root
 from pyloader.tools import build_menu
@@ -43,18 +41,15 @@ def error_callback(bot, update, error):
         logger.error(e.message)
 
 
+# Threadlimiter instance
+threadlimiter = ThreadLimiter(max_threads=Config.max_threads)
+
+
 def regex_download(bot, update):
     logger = logging.getLogger(__name__)
     logger.debug("Found regex-pattern for YouTube link!")
 
-    try:
-        # TODO: avoid download video multiple times with "Thread map"
-        thread = DownloadThread(args=(bot, update,))
-        thread.start()
-        pass
-    except Exception:
-        error = traceback.format_exc()
-        logger.critical(error)
+    threadlimiter.put_job(Job(bot, update))
 
 
 def ping(bot, update):
@@ -101,6 +96,7 @@ def reboot(bot, update):
     else:
         reboot_now()
 
+
 def test(bot, update):
 
     button_list = [
@@ -111,8 +107,10 @@ def test(bot, update):
     reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=1))
     bot.send_message(Config.admin_chat_id, "Save track to...", reply_markup=reply_markup)
 
+
 def call(bot, update):
     bool = bot.answer_callback_query(update.callback_query.id, "TEST", "")
+
 
 class TelegramServer:
 
