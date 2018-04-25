@@ -7,8 +7,7 @@ class Config:
     dir_log = "/home/tomg/projects/logs/py_loader.err"
     dir_err = "/home/tomg/projects/logs/py_loader.log"
 
-    #bot_token = "548165005:AAGUTShuLphcrMwGbhDcfVndQ009zjHuFHk"
-    bot_token = "520012917:AAHctrBUY7GLtwhjdZQy0zA86ZDxGjGc1vk"
+    bot_token = ""
 
     max_threads = 3
 
