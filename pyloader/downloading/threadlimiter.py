@@ -47,6 +47,7 @@ class ThreadLimiter:
             # Queue jobs to the processing queue
             self.__process_queue.put(job)
 
+            # TODO: only log when putting
             self.logger.info('Queued Job: {id} [{count}]'
                              .format(id=str(job.id),
                                      count=str(self.__wait_queue.qsize() + 1)))
