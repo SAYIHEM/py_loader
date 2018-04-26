@@ -1,7 +1,6 @@
 import logging
 import traceback
 from queue import Queue
-from threading import Thread
 import atexit
 
 from pyloader.downloading import DownloadThread
@@ -15,19 +14,15 @@ class ThreadLimiter:
 
     threads = []
 
-    __wait_queue = None
-    __process_queue = None
+    __job_queue = None
 
     def __init__(self, max_threads):
-        self.__wait_queue = Queue()
-        self.__process_queue = Queue(maxsize=max_threads)
+        self.__job_queue = Queue()
 
-        Thread(target=(lambda: self.__queue_jobs())).start()
-
-        # Start threads for processing-queue
+        # Start threads for job-queue
         try:
-            for i in range(self.__process_queue.maxsize):
-                self.threads.append(DownloadThread(args=(self.__process_queue,)))
+            for i in range(max_threads):
+                self.threads.append(DownloadThread(args=(self.__job_queue,)))
                 self.threads[i].setDaemon(True)
                 self.threads[i].start()
                 pass
@@ -36,21 +31,7 @@ class ThreadLimiter:
             self.logger.critical(error)
 
     def put_job(self, job):
-        self.__wait_queue.put(job)
-
-    def __queue_jobs(self):
-        while True:
-            # Get jobs from waiting-queue
-            job = self.__wait_queue.get()
-            self.__wait_queue.task_done()
-
-            # Queue jobs to the processing queue
-            self.__process_queue.put(job)
-
-            # TODO: only log when putting
-            self.logger.info('Queued Job: {id} [{count}]'
-                             .format(id=str(job.id),
-                                     count=str(self.__wait_queue.qsize() + 1)))
+        self.__job_queue.put(job)
 
     @atexit.register
     def at_exit(self):

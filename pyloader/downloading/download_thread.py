@@ -31,10 +31,9 @@ class DownloadThread(Thread):
             if not self.queue.empty():
                 job = self.queue.get()
 
-                self.logger.info('Processing Job: {id} [{count}/{size}]'
+                self.logger.info('Processing Job: {id} [{count}]'
                                  .format(id=str(job.id),
-                                         count=str(self.queue.qsize() + 1),
-                                         size=str(self.queue.maxsize)))
+                                         count=str(self.queue.qsize() + 1)))
 
                 self.__process_download(job)
 
