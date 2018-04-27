@@ -1,4 +1,5 @@
 import logging
+import time
 import traceback
 from threading import Thread
 
@@ -36,6 +37,9 @@ class DownloadThread(Thread):
                                          count=str(self.queue.qsize() + 1)))
 
                 self.__process_download(job)
+
+            # Lower CPU usage
+            time.sleep(0.5)
 
     def __process_download(self, job):
 
