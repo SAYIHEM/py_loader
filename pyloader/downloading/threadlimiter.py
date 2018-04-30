@@ -30,10 +30,12 @@ class ThreadLimiter:
             error = traceback.format_exc()
             self.logger.critical(error)
 
+        # Register atExit function
+        atexit.register(self.at_exit)
+
     def put_job(self, job):
         self.__job_queue.put(job)
 
-    @atexit.register
     def at_exit(self):
         for t in self.threads:
             t.join()
