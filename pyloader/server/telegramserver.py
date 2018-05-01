@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import logging
 import threading
 import time
@@ -53,7 +53,9 @@ def regex_download(bot, update):
 
 
 def ping(bot, update):
-    update.message.reply_text("ping") # TODO: ping with millis
+
+    millis = ((datetime.now() - update.message.date) / 10000).microseconds
+    update.message.reply_text("ping {ping}ms".format(ping=millis))  # Answer with milliseconds
 
 
 @root
