@@ -50,6 +50,8 @@ class TelegramServer:
         self.logger.debug("Initialized Updater with API-Token.")
 
     def start(self):
+        """Starts the updater."""
+
         self.logger.info("Started Telegram Bot.")
         self.updater.start_polling()
 
@@ -57,6 +59,8 @@ class TelegramServer:
 
     # TODO: send audio
     def __set_handler(self):
+        """Setting up command and event handler."""
+
         self.updater.dispatcher.add_handler(RegexHandler(Regex.yt_link, self.__regex_download))
         self.updater.dispatcher.add_handler(CommandHandler("ping", self.__ping))
         self.updater.dispatcher.add_handler(CommandHandler("reboot", self.__reboot))
@@ -71,8 +75,6 @@ class TelegramServer:
     def __regex_download(self, bot: telegram.bot, update: telegram.Update):
         logger = logging.getLogger(__name__)
         logger.debug("Found regex-pattern for YouTube link!")
-
-        message = update.message
 
         self.threadlimiter.put_job(Job(bot, update))
 
