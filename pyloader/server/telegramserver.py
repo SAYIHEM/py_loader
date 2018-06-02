@@ -19,13 +19,6 @@ __all__ = ["TelegramServer"]
 
 
 
-
-
-# Threadlimiter instance
-threadlimiter = ThreadLimiter(max_threads=Config.max_threads)
-
-
-
 def test(bot, update):
 
     button_list = [
@@ -44,6 +37,9 @@ def call(bot, update):
 class TelegramServer:
 
     logger = logging.getLogger(__name__)
+
+    # Threadlimiter instance
+    threadlimiter = ThreadLimiter(max_threads=Config.max_threads)
 
     updater = None
 
@@ -72,21 +68,20 @@ class TelegramServer:
 
         self.logger.debug("Set up handler.")
 
-    @staticmethod
-    def __regex_download(bot: telegram.bot, update: telegram.Update):
+    def __regex_download(self, bot: telegram.bot, update: telegram.Update):
         logger = logging.getLogger(__name__)
         logger.debug("Found regex-pattern for YouTube link!")
 
-        threadlimiter.put_job(Job(bot, update))
+        message = update.message
 
-    @staticmethod
-    def __ping(bot: telegram.bot, update: telegram.Update):
+        self.threadlimiter.put_job(Job(bot, update))
+
+    def __ping(self, bot: telegram.bot, update: telegram.Update):
         millis = ((datetime.now() - update.message.date) / 10000).microseconds
         update.message.reply_text("ping {ping}ms".format(ping=millis))  # Answer with milliseconds
 
-    @staticmethod
     @root
-    def __reboot(bot: telegram.bot, update: telegram.Update):
+    def __reboot(self, bot: telegram.bot, update: telegram.Update):
         logger = logging.getLogger(__name__)
 
         user = update.message.from_user
@@ -125,8 +120,7 @@ class TelegramServer:
         else:
             reboot_now()
 
-    @staticmethod
-    def __error_callback(bot: telegram.bot, update: telegram.Update, error):
+    def __error_callback(self, bot: telegram.bot, update: telegram.Update, error):
         logger = logging.getLogger("telegramserver.error")
 
         try:

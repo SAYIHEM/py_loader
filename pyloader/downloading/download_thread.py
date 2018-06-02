@@ -1,13 +1,11 @@
 import logging
+import re
 import time
 import traceback
 from threading import Thread
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-
 from pyloader import Config
 from pyloader.downloading import YTLoader
-from pyloader.tools import build_menu
 
 __all__ = ["DownloadThread"]
 
@@ -45,6 +43,11 @@ class DownloadThread(Thread):
 
         # Get url from message
         url = job.update.message.text
+
+        # Cut off playlist url
+        index = url.find("&list=")
+        if index != -1:
+            url = url[:index]
 
         # TODO: implement Save to dircetory
         # genre_dirs = ["Hardstyle", "Rawstyle", "Hardcore", "Frenchcore"]  # TODO: config file with directory shortcuts -> function to add new
