@@ -1,10 +1,11 @@
 import logging
+import re
 import time
 import traceback
 from threading import Thread
 
 from pyloader import Config
-from pyloader.downloading import YTLoader
+from pyloader.downloading import Regex, YTLoader
 
 __all__ = ["DownloadThread"]
 
@@ -43,10 +44,9 @@ class DownloadThread(Thread):
         # Get url from message
         url = job.update.message.text
 
-        # Cut off playlist url
-        index = url.find("&list=")
-        if index != -1:
-            url = url[:index]
+        # Filter link to find video url
+        url = re.findall(Regex.yt_link, url)
+        url = ''.join(url[0])  # TODO: Pack tuple better
 
         # TODO: implement Save to dircetory
         # genre_dirs = ["Hardstyle", "Rawstyle", "Hardcore", "Frenchcore"]  # TODO: config file with directory shortcuts -> function to add new
