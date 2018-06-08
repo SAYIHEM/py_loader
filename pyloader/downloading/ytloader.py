@@ -17,7 +17,6 @@ class YTLoader:
 
     def __init__(self, url):
 
-        # TODO: Check url
         self.url = url
 
         with youtube_dl.YoutubeDL() as ydl:

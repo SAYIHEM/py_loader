@@ -46,7 +46,7 @@ class DownloadThread(Thread):
 
         # Filter link to find video url
         url = re.findall(Regex.yt_link, url)
-        url = ''.join(url[0])  # TODO: Pack tuple better
+        url = ''.join(url[0])  # Concatenate regex groups
 
         # TODO: implement Save to dircetory
         # genre_dirs = ["Hardstyle", "Rawstyle", "Hardcore", "Frenchcore"]  # TODO: config file with directory shortcuts -> function to add new
