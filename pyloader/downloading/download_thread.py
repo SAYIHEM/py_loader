@@ -1,12 +1,11 @@
 import logging
+import re
+import time
 import traceback
 from threading import Thread
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-
 from pyloader import Config
-from pyloader.downloading import YTLoader
-from pyloader.tools import build_menu
+from pyloader.downloading import Regex, YTLoader
 
 __all__ = ["DownloadThread"]
 
@@ -31,17 +30,23 @@ class DownloadThread(Thread):
             if not self.queue.empty():
                 job = self.queue.get()
 
-                self.logger.info('Processing Job: {id} [{count}/{size}]'
+                self.logger.info('Processing Job: {id} [{count}]'
                                  .format(id=str(job.id),
-                                         count=str(self.queue.qsize() + 1),
-                                         size=str(self.queue.maxsize)))
+                                         count=str(self.queue.qsize() + 1)))
 
                 self.__process_download(job)
+
+            # Lower CPU usage
+            time.sleep(0.5)
 
     def __process_download(self, job):
 
         # Get url from message
         url = job.update.message.text
+
+        # Filter link to find video url
+        url = re.findall(Regex.yt_link, url)
+        url = ''.join(url[0])  # Concatenate regex groups
 
         # TODO: implement Save to dircetory
         # genre_dirs = ["Hardstyle", "Rawstyle", "Hardcore", "Frenchcore"]  # TODO: config file with directory shortcuts -> function to add new

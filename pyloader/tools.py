@@ -1,6 +1,6 @@
 from telegram import Message
 
-__all__ = []
+__all__ = ['to_arg_array', 'build_menu']
 
 
 def to_arg_array(message):
