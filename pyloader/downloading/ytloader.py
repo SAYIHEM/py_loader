@@ -31,8 +31,7 @@ class YTLoader:
             path.mkdir(parents=True)
 
         # path = Config.dir_download + "/%(title)s.%(ext)s"
-        # path = f'{Config.dir_download}/{self.title}.' + "%(ext)s"
-        path = f'{Config.dir_download}/{self.title}.%(ext)s'
+        path = f'{Config.dir_download}/{self.title}.' + "%(ext)s"
 
         class Log(object):
             logger = logging.getLogger("downloader")
