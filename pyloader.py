@@ -9,11 +9,13 @@ from pyloader import PyLoader
 from pyloader.handler import NotifyOnException
 from pyloader import Config
 
+telegram_server = None
+logger = None
+
 def main():
 
 
-    global telegram_server
-    global logger
+
     logger = logging.getLogger()
 
     logging.basicConfig(level=logging.CRITICAL,
