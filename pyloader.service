@@ -2,7 +2,7 @@
 Description = PyLoader
 After = network.target
 [Service]
-ExecStart = /usr/bin/python3 /home/pi/py_loader/pyloader.py
+ExecStart = /usr/local/bin/python3 /home/pi/py_loader/pyloader.py
 StandardOutput = syslog
 StandardError = syslog
 SyslogIdentifier = PyLoader

@@ -1,6 +1,6 @@
 #!/bin/bash
 dir="/home/pi/py_loader"
-cmd="/usr/bin/python3 /home/pi/py_loader/pyloader.py"
+cmd="/usr/local/bin/python3 /home/pi/py_loader/pyloader.py"
 user="root"
 
 stdout_log="/home/pi/logs/py_loader.log"
